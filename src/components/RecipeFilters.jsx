@@ -1,9 +1,14 @@
 import React from "react";
-import { Search, SlidersHorizontal } from "lucide-react";
+import { SlidersHorizontal, RotateCcw } from "lucide-react";
 
-const RecipeFilters = ({ filters, setFilters, onSearch }) => {
+const RecipeFilters = ({
+  activeCategory,
+  setActiveCategory,
+  activeDifficulty,
+  setActiveDifficulty,
+}) => {
   const categories = [
-    "Tutti",
+    "Tutte",
     "Primi Piatti",
     "Secondi Piatti",
     "Dolci",
@@ -11,54 +16,49 @@ const RecipeFilters = ({ filters, setFilters, onSearch }) => {
     "Contorni",
   ];
   const difficulties = ["Tutte", "Facile", "Media", "Difficile"];
-  const sortOptions = [
-    { value: "rating", label: "Più votate" },
-    { value: "time-asc", label: "Tempo: crescente" },
-    { value: "time-desc", label: "Tempo: decrescente" },
-    { value: "name", label: "Nome A-Z" },
-  ];
+
+  const hasActiveFilters =
+    activeCategory !== "Tutte" || activeDifficulty !== "Tutte";
+
+  const resetFilters = () => {
+    setActiveCategory("Tutte");
+    setActiveDifficulty("Tutte");
+  };
 
   return (
-    <div className="bg-white rounded-xl shadow-md p-6 mb-8">
-      {/* Search Bar */}
-      <div className="relative mb-6">
-        <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-        <input
-          type="text"
-          placeholder="Cerca ricette per nome o ingrediente..."
-          value={filters.search}
-          onChange={(e) => setFilters({ ...filters, search: e.target.value })}
-          className="w-full pl-12 pr-4 py-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent text-lg"
-        />
+    <div className="bg-white rounded-xl shadow-md p-6 mb-8 border border-gray-100">
+      {/* Intestazione Filtri */}
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center space-x-2">
+          <SlidersHorizontal className="w-5 h-5 text-orange-500" />
+          <h3 className="font-semibold text-gray-800">Filtra Ricette</h3>
+        </div>
+
+        {hasActiveFilters && (
+          <button
+            onClick={resetFilters}
+            className="text-sm text-orange-500 hover:text-orange-600 flex items-center gap-1 transition-colors"
+          >
+            <RotateCcw size={14} /> Resetta
+          </button>
+        )}
       </div>
 
-      {/* Filters Header */}
-      <div className="flex items-center space-x-2 mb-4">
-        <SlidersHorizontal className="w-5 h-5 text-primary-500" />
-        <h3 className="font-semibold text-gray-800">Filtri</h3>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* Category Filter */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {/* Filtro Categoria */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-3">
+          <label className="block text-sm font-bold text-gray-700 mb-3 uppercase tracking-wider">
             Categoria
           </label>
           <div className="flex flex-wrap gap-2">
             {categories.map((category) => (
               <button
                 key={category}
-                onClick={() =>
-                  setFilters({
-                    ...filters,
-                    category: category === "Tutti" ? "" : category,
-                  })
-                }
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
-                  (filters.category === "" && category === "Tutti") ||
-                  filters.category === category
-                    ? "bg-primary-500 text-white shadow-md"
-                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                onClick={() => setActiveCategory(category)}
+                className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 border ${
+                  activeCategory === category
+                    ? "bg-orange-500 text-white border-orange-500 shadow-md transform scale-105"
+                    : "bg-white text-gray-600 border-gray-200 hover:border-orange-300 hover:bg-orange-50"
                 }`}
               >
                 {category}
@@ -67,26 +67,20 @@ const RecipeFilters = ({ filters, setFilters, onSearch }) => {
           </div>
         </div>
 
-        {/* Difficulty Filter */}
+        {/* Filtro Difficoltà */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-3">
+          <label className="block text-sm font-bold text-gray-700 mb-3 uppercase tracking-wider">
             Difficoltà
           </label>
           <div className="flex flex-wrap gap-2">
             {difficulties.map((difficulty) => (
               <button
                 key={difficulty}
-                onClick={() =>
-                  setFilters({
-                    ...filters,
-                    difficulty: difficulty === "Tutte" ? "" : difficulty,
-                  })
-                }
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
-                  (filters.difficulty === "" && difficulty === "Tutte") ||
-                  filters.difficulty === difficulty
-                    ? "bg-primary-500 text-white shadow-md"
-                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                onClick={() => setActiveDifficulty(difficulty)}
+                className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 border ${
+                  activeDifficulty === difficulty
+                    ? "bg-orange-500 text-white border-orange-500 shadow-md transform scale-105"
+                    : "bg-white text-gray-600 border-gray-200 hover:border-orange-300 hover:bg-orange-50"
                 }`}
               >
                 {difficulty}
@@ -94,44 +88,7 @@ const RecipeFilters = ({ filters, setFilters, onSearch }) => {
             ))}
           </div>
         </div>
-
-        {/* Sort */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-3">
-            Ordina per
-          </label>
-          <select
-            value={filters.sort}
-            onChange={(e) => setFilters({ ...filters, sort: e.target.value })}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-          >
-            {sortOptions.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-        </div>
       </div>
-
-      {/* Reset Button */}
-      {(filters.search || filters.category || filters.difficulty !== "") && (
-        <div className="mt-6 flex justify-end">
-          <button
-            onClick={() =>
-              setFilters({
-                search: "",
-                category: "",
-                difficulty: "",
-                sort: "rating",
-              })
-            }
-            className="px-4 py-2 text-sm text-primary-500 hover:text-primary-600 font-medium"
-          >
-            Resetta filtri
-          </button>
-        </div>
-      )}
     </div>
   );
 };

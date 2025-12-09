@@ -1,88 +1,82 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import { ArrowRight } from "lucide-react";
-import RecipeCard from "../components/RecipeCard";
+import { useState, useMemo } from "react";
 import { recipes } from "../data/recipes";
+import RecipeCard from "../components/RecipeCard";
+import RecipeFilters from "../components/RecipeFilters";
+import { Search } from "lucide-react"; // Assicurati di avere lucide-react installato
 
 const Recipes = () => {
-  const [search, setSearch] = useState("");
-  const [category, setCategory] = useState("All");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("Tutte");
+  const [selectedDifficulty, setSelectedDifficulty] = useState("Tutte");
 
-  const categories = ["All", "Primi", "Secondi", "Dolci", "Antipasti"];
+  // Logica di filtraggio ottimizzata con useMemo
+  const filteredRecipes = useMemo(() => {
+    return recipes.filter((recipe) => {
+      const matchesSearch = recipe.title
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase());
+      const matchesCategory =
+        selectedCategory === "Tutte" || recipe.category === selectedCategory;
+      const matchesDifficulty =
+        selectedDifficulty === "Tutte" ||
+        recipe.difficulty === selectedDifficulty;
 
-  const filteredRecipes = recipes.filter((recipe) => {
-    const matchesSearch = recipe.name
-      .toLowerCase()
-      .includes(search.toLowerCase());
-    const matchesCategory = category === "All" || recipe.category === category;
-    return matchesSearch && matchesCategory;
-  });
+      return matchesSearch && matchesCategory && matchesDifficulty;
+    });
+  }, [searchTerm, selectedCategory, selectedDifficulty]);
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-gradient-to-r from-primary-500 to-orange-500 text-white py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-5xl font-bold mb-4">Tutte le Ricette</h1>
-          <p className="text-xl text-white/90">
-            Sfoglia, cerca e trova la tua prossima ricetta preferita
-          </p>
-        </div>
-      </header>
+    <div className="container mx-auto px-4 py-8 min-h-screen">
+      <h1 className="text-4xl font-bold text-center mb-8 text-orange-600 font-serif">
+        Le Nostre Ricette
+      </h1>
 
-      {/* Search & Filter */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="flex flex-col md:flex-row gap-4 justify-between items-center">
+      {/* Barra di Ricerca e Filtri */}
+      <div className="mb-8 space-y-4">
+        <div className="relative max-w-md mx-auto">
           <input
             type="text"
-            placeholder="Cerca ricetta..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full md:w-1/3 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+            placeholder="Cerca una ricetta (es. Carbonara)..."
+            className="w-full pl-10 pr-4 py-2 border-2 border-orange-200 rounded-full focus:outline-none focus:border-orange-500 transition-colors"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
           />
-          <select
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-            className="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
-          >
-            {categories.map((cat, idx) => (
-              <option key={idx} value={cat}>
-                {cat}
-              </option>
-            ))}
-          </select>
+          <Search className="absolute left-3 top-2.5 text-orange-400 h-5 w-5" />
         </div>
-      </section>
 
-      {/* Recipes Grid */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {filteredRecipes.length === 0 ? (
-          <p className="text-center text-gray-500 text-lg">
-            Nessuna ricetta trovata 😔
+        {/* Passiamo le funzioni di stato al componente filtri */}
+        <RecipeFilters
+          activeCategory={selectedCategory}
+          setActiveCategory={setSelectedCategory}
+          activeDifficulty={selectedDifficulty}
+          setActiveDifficulty={setSelectedDifficulty}
+        />
+      </div>
+
+      {/* Griglia Risultati */}
+      {filteredRecipes.length > 0 ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {filteredRecipes.map((recipe) => (
+            <RecipeCard key={recipe.id} recipe={recipe} />
+          ))}
+        </div>
+      ) : (
+        <div className="text-center py-12">
+          <p className="text-xl text-gray-500">
+            Nessuna ricetta trovata con questi criteri.
           </p>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredRecipes.map((recipe) => (
-              <RecipeCard key={recipe.id} recipe={recipe} />
-            ))}
-          </div>
-        )}
-      </section>
-
-      {/* CTA */}
-      <section className="py-16 bg-primary-500 text-white text-center">
-        <h2 className="text-3xl font-bold mb-4">
-          Vuoi scoprire tutte le ricette?
-        </h2>
-        <p className="mb-6 text-lg">Registrati e salva le tue preferite!</p>
-        <Link
-          to="/signup"
-          className="btn-primary bg-white text-primary-600 hover:bg-primary-50 inline-flex items-center space-x-2"
-        >
-          <span>Registrati Ora</span>
-          <ArrowRight className="w-5 h-5" />
-        </Link>
-      </section>
+          <button
+            onClick={() => {
+              setSearchTerm("");
+              setSelectedCategory("Tutte");
+              setSelectedDifficulty("Tutte");
+            }}
+            className="mt-4 text-orange-600 hover:underline"
+          >
+            Resetta filtri
+          </button>
+        </div>
+      )}
     </div>
   );
 };

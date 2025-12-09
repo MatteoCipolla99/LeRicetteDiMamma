@@ -1,227 +1,211 @@
 import React from "react";
 import { Link } from "react-router-dom";
+// AGGIUNTO PlusCircle agli import
 import {
-  ChefHat,
-  Clock,
-  TrendingUp,
-  Heart,
   ArrowRight,
+  Utensils,
+  Award,
+  Clock,
   Star,
-  Users,
+  PlusCircle,
 } from "lucide-react";
-import { recipes } from "../data/recipes";
+import { useRecipes } from "../context/RecipeContext";
 import RecipeCard from "../components/RecipeCard";
 
 const Home = () => {
-  const featuredRecipes = recipes.slice(0, 3);
+  const { allRecipes } = useRecipes();
 
-  const stats = [
-    {
-      icon: ChefHat,
-      value: "50+",
-      label: "Ricette",
-      color: "bg-orange-100 text-orange-600",
-    },
-    {
-      icon: Users,
-      value: "1000+",
-      label: "Utenti",
-      color: "bg-blue-100 text-blue-600",
-    },
-    {
-      icon: Star,
-      value: "4.8",
-      label: "Rating Medio",
-      color: "bg-yellow-100 text-yellow-600",
-    },
-    {
-      icon: Heart,
-      value: "2500+",
-      label: "Mi Piace",
-      color: "bg-red-100 text-red-600",
-    },
+  // Prendiamo 3 ricette a caso o le più recenti per la sezione "In Evidenza"
+  // In un'app reale potresti voler mescolare l'array
+  const featuredRecipes = allRecipes.slice(0, 3);
+
+  const categories = [
+    { name: "Primi Piatti", icon: "🍝", desc: "Pasta, Risotti e Zuppe" },
+    { name: "Secondi Piatti", icon: "🍖", desc: "Carne, Pesce e Arrosti" },
+    { name: "Dolci", icon: "🍰", desc: "Torte, Biscotti e Creme" },
+    { name: "Contorni", icon: "🥗", desc: "Verdure e Insalate" },
   ];
 
   return (
-    <div className="min-h-screen">
-      {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-primary-500 via-primary-600 to-orange-600 text-white py-20 overflow-hidden">
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-20 left-10 w-72 h-72 bg-white rounded-full blur-3xl"></div>
-          <div className="absolute bottom-20 right-10 w-96 h-96 bg-white rounded-full blur-3xl"></div>
+    <div className="overflow-x-hidden">
+      {/* HERO SECTION */}
+      <section className="relative h-[85vh] flex items-center">
+        {/* Immagine di sfondo con overlay */}
+        <div className="absolute inset-0 z-0">
+          <img
+            src="https://images.unsplash.com/photo-1556910103-1c02745a30bf?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80"
+            alt="Cooking Background"
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-transparent"></div>
         </div>
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div className="animate-fadeIn">
-              <div className="inline-flex items-center space-x-2 bg-white bg-opacity-20 px-4 py-2 rounded-full mb-6">
-                <TrendingUp className="w-4 h-4" />
-                <span className="text-sm font-medium">
-                  Le Ricette più Amate
-                </span>
-              </div>
-
-              <h1 className="text-5xl md:text-6xl font-display font-bold mb-6 leading-tight">
-                Le Ricette Tradizionali della{" "}
-                <span className="text-yellow-300">Mamma</span>
-              </h1>
-
-              <p className="text-xl text-primary-50 mb-8 leading-relaxed">
-                Scopri i segreti della cucina italiana con le ricette autentiche
-                tramandate di generazione in generazione.
-              </p>
-
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Link
-                  to="/recipes"
-                  className="btn-primary bg-white text-primary-600 hover:bg-primary-50 inline-flex items-center justify-center space-x-2 group"
-                >
-                  <span>Esplora le Ricette</span>
-                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                </Link>
-                <button className="btn-secondary border-white text-white hover:bg-white hover:bg-opacity-10">
-                  Guarda il Video
-                </button>
-              </div>
-            </div>
-
-            <div className="relative hidden lg:block">
-              <div className="relative z-10">
-                <img
-                  src="https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=600"
-                  alt="Cucina italiana"
-                  className="rounded-2xl shadow-2xl transform hover:scale-105 transition-transform duration-500"
-                />
-                <div className="absolute -bottom-6 -left-6 bg-white text-gray-800 p-6 rounded-xl shadow-xl">
-                  <div className="flex items-center space-x-4">
-                    <div className="bg-primary-100 p-3 rounded-full">
-                      <ChefHat className="w-8 h-8 text-primary-500" />
-                    </div>
-                    <div>
-                      <p className="text-2xl font-bold text-primary-500">50+</p>
-                      <p className="text-sm text-gray-600">
-                        Ricette Autentiche
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
+        <div className="container mx-auto px-4 relative z-10 text-white">
+          <div className="max-w-2xl animate-fade-in-up">
+            <span className="bg-orange-500 text-white px-4 py-1 rounded-full text-sm font-bold uppercase tracking-wider mb-4 inline-block">
+              Dal 1999
+            </span>
+            <h1 className="text-5xl md:text-7xl font-serif font-bold mb-6 leading-tight">
+              Il sapore autentico <br />
+              <span className="text-orange-400">di casa tua.</span>
+            </h1>
+            <p className="text-lg md:text-xl text-gray-200 mb-8 leading-relaxed">
+              Scopri le ricette segrete di Mamma Concetta. Tradizione, passione
+              e ingredienti genuini per portare la felicità in tavola ogni
+              giorno.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4">
+              <Link
+                to="/recipes"
+                className="px-8 py-4 bg-orange-500 hover:bg-orange-600 text-white rounded-full font-bold text-lg transition-all transform hover:-translate-y-1 shadow-lg shadow-orange-500/30 flex items-center justify-center gap-2"
+              >
+                Inizia a Cucinare <ArrowRight size={20} />
+              </Link>
+              <Link
+                to="/add-recipe"
+                className="px-8 py-4 bg-white/10 backdrop-blur-md hover:bg-white/20 text-white border border-white/30 rounded-full font-bold text-lg transition-all flex items-center justify-center"
+              >
+                Condividi la tua Ricetta
+              </Link>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Stats Section */}
-      <section className="py-12 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            {stats.map((stat, index) => (
-              <div
-                key={index}
-                className="text-center p-6 rounded-xl hover:shadow-lg transition-shadow"
-              >
-                <div
-                  className={`inline-flex p-4 rounded-full ${stat.color} mb-4`}
-                >
-                  <stat.icon className="w-8 h-8" />
-                </div>
-                <p className="text-3xl font-bold text-gray-800 mb-1">
-                  {stat.value}
-                </p>
-                <p className="text-gray-600">{stat.label}</p>
+      {/* FEATURES STRIP */}
+      <div className="bg-orange-50 py-12 border-b border-orange-100">
+        <div className="container mx-auto px-4 grid grid-cols-2 md:grid-cols-4 gap-8">
+          {[
+            {
+              icon: <Utensils className="w-8 h-8 text-orange-500" />,
+              title: "Ricette Autentiche",
+              desc: "Testate dalla Mamma",
+            },
+            {
+              icon: <Clock className="w-8 h-8 text-orange-500" />,
+              title: "Veloci & Facili",
+              desc: "Per chi ha poco tempo",
+            },
+            {
+              icon: <Award className="w-8 h-8 text-orange-500" />,
+              title: "Ingredienti Sani",
+              desc: "Solo il meglio",
+            },
+            {
+              icon: <Star className="w-8 h-8 text-orange-500" />,
+              title: "Community Top",
+              desc: "Chef appassionati",
+            },
+          ].map((feature, i) => (
+            <div
+              key={i}
+              className="flex flex-col items-center text-center group"
+            >
+              <div className="mb-3 p-3 bg-white rounded-full shadow-sm group-hover:scale-110 transition-transform">
+                {feature.icon}
               </div>
+              <h3 className="font-bold text-gray-800">{feature.title}</h3>
+              <p className="text-sm text-gray-500">{feature.desc}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* CATEGORIES */}
+      <section className="py-20 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-serif font-bold text-gray-800 mb-4">
+              Cosa vuoi mangiare oggi?
+            </h2>
+            <p className="text-gray-500">
+              Esplora le nostre categorie principali
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {categories.map((cat, i) => (
+              <Link
+                key={i}
+                to={`/recipes`}
+                className="group relative overflow-hidden rounded-2xl aspect-[4/5] bg-gray-100 shadow-md hover:shadow-xl transition-all"
+              >
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent z-10 flex flex-col justify-end p-6">
+                  <span className="text-4xl mb-2 transform group-hover:-translate-y-2 transition-transform duration-500">
+                    {cat.icon}
+                  </span>
+                  <h3 className="text-2xl font-bold text-white mb-1 group-hover:text-orange-400 transition-colors">
+                    {cat.name}
+                  </h3>
+                  <p className="text-gray-300 text-sm opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-500">
+                    {cat.desc}
+                  </p>
+                </div>
+                <img
+                  src={`https://source.unsplash.com/random/400x500/?food,${
+                    cat.name.split(" ")[0]
+                  }`}
+                  alt={cat.name}
+                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                />
+              </Link>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Featured Recipes */}
-      <section className="py-16 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl font-display font-bold text-gray-800 mb-4">
-              Ricette in Evidenza
-            </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Le ricette più amate dalla nostra community, provate e consigliate
-            </p>
+      {/* FEATURED RECIPES */}
+      <section className="py-20 bg-gray-50">
+        <div className="container mx-auto px-4">
+          <div className="flex justify-between items-end mb-12">
+            <div>
+              <span className="text-orange-500 font-bold uppercase tracking-wider text-sm">
+                Scelti per te
+              </span>
+              <h2 className="text-4xl font-serif font-bold text-gray-800 mt-2">
+                I piatti del momento
+              </h2>
+            </div>
+            <Link
+              to="/recipes"
+              className="hidden md:flex items-center gap-2 text-orange-600 font-bold hover:text-orange-700 transition-colors"
+            >
+              Vedi tutti <ArrowRight size={20} />
+            </Link>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {featuredRecipes.map((recipe) => (
               <RecipeCard key={recipe.id} recipe={recipe} />
             ))}
           </div>
 
-          <div className="text-center">
-            <Link
-              to="/recipes"
-              className="btn-primary inline-flex items-center space-x-2"
-            >
-              <span>Vedi Tutte le Ricette</span>
-              <ArrowRight className="w-5 h-5" />
+          <div className="mt-12 text-center md:hidden">
+            <Link to="/recipes" className="btn-primary w-full justify-center">
+              Vedi tutti i piatti
             </Link>
           </div>
         </div>
       </section>
 
-      {/* Features Section */}
-      <section className="py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="text-center p-8 rounded-xl hover:shadow-lg transition-shadow">
-              <div className="inline-flex p-4 bg-green-100 rounded-full mb-4">
-                <Clock className="w-10 h-10 text-green-600" />
-              </div>
-              <h3 className="text-xl font-bold text-gray-800 mb-3">
-                Ricette Veloci
-              </h3>
-              <p className="text-gray-600">
-                Piatti deliziosi pronti in meno di 30 minuti per le tue giornate
-                impegnative
-              </p>
-            </div>
-
-            <div className="text-center p-8 rounded-xl hover:shadow-lg transition-shadow">
-              <div className="inline-flex p-4 bg-purple-100 rounded-full mb-4">
-                <Heart className="w-10 h-10 text-purple-600" />
-              </div>
-              <h3 className="text-xl font-bold text-gray-800 mb-3">
-                Cucina Tradizionale
-              </h3>
-              <p className="text-gray-600">
-                Ricette autentiche della tradizione italiana, tramandate con
-                amore
-              </p>
-            </div>
-
-            <div className="text-center p-8 rounded-xl hover:shadow-lg transition-shadow">
-              <div className="inline-flex p-4 bg-blue-100 rounded-full mb-4">
-                <Star className="w-10 h-10 text-blue-600" />
-              </div>
-              <h3 className="text-xl font-bold text-gray-800 mb-3">
-                Sempre Aggiornate
-              </h3>
-              <p className="text-gray-600">
-                Nuove ricette aggiunte ogni settimana per ispirarti in cucina
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="py-16 bg-gradient-to-r from-primary-500 to-orange-500 text-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-4xl font-display font-bold mb-6">
-            Inizia a Cucinare Oggi!
+      {/* CTA SECTION */}
+      <section className="py-24 bg-gray-900 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-1/2 h-full bg-orange-600/10 rounded-l-full blur-3xl transform translate-x-1/2"></div>
+        <div className="container mx-auto px-4 relative z-10 text-center max-w-3xl">
+          <h2 className="text-4xl md:text-5xl font-serif font-bold text-white mb-6">
+            Hai una ricetta segreta?
           </h2>
-          <p className="text-xl text-primary-50 mb-8">
-            Registrati gratuitamente e salva le tue ricette preferite
+          <p className="text-xl text-gray-300 mb-10 leading-relaxed">
+            Entra a far parte della nostra famiglia di chef. Condividi le tue
+            creazioni, ricevi recensioni e salva i tuoi piatti preferiti nel tuo
+            ricettario digitale.
           </p>
-          <button className="btn-primary bg-white text-primary-600 hover:bg-primary-50">
-            Registrati Gratis
-          </button>
+          <Link
+            to="/add-recipe"
+            className="inline-flex items-center px-10 py-4 bg-white text-gray-900 rounded-full font-bold text-lg hover:bg-orange-50 transition-colors shadow-2xl"
+          >
+            <PlusCircle className="mr-2" /> Aggiungi Ricetta
+          </Link>
         </div>
       </section>
     </div>
