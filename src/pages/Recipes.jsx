@@ -1,90 +1,99 @@
-import { useState, useMemo } from "react";
+import React from "react";
+import { useRecipeFilters } from "../hooks/useRecipeFilters";
 import { recipes } from "../data/recipes";
 import RecipeCard from "../components/RecipeCard";
-import RecipeFilters from "../components/RecipeFilters"; // Si assume che questo componente esista e sia ben stilizzato
-import { Search } from "lucide-react";
+import RecipeFilters from "../components/RecipeFilters";
+import { Search, Frown } from "lucide-react";
 
 const Recipes = () => {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("Tutte");
-  const [selectedDifficulty, setSelectedDifficulty] = useState("Tutte");
-
-  // Logica di filtraggio ottimizzata con useMemo
-  const filteredRecipes = useMemo(() => {
-    return recipes.filter((recipe) => {
-      const matchesSearch = recipe.title
-        .toLowerCase()
-        .includes(searchTerm.toLowerCase());
-      const matchesCategory =
-        selectedCategory === "Tutte" || recipe.category === selectedCategory;
-      const matchesDifficulty =
-        selectedDifficulty === "Tutte" ||
-        recipe.difficulty === selectedDifficulty;
-
-      return matchesSearch && matchesCategory && matchesDifficulty;
-    });
-  }, [searchTerm, selectedCategory, selectedDifficulty]);
+  // Logica delegata all'hook custom per mantenere il componente pulito
+  const { filteredRecipes, filters, setFilter, resetFilters } =
+    useRecipeFilters(recipes);
 
   return (
-    <div className="container mx-auto px-4 py-12 min-h-screen">
-      <h1 className="text-5xl font-extrabold text-center mb-4 text-gray-900 font-serif">
-        Scopri le Ricette
-      </h1>
-      <p className="text-center text-lg text-gray-500 mb-12">
-        Migliaia di piatti dalla tradizione ai moderni, tutti testati dalla
-        Mamma.
-      </p>
+    // Padding top aumentato (pt-32) per compensare la navbar fixed
+    <div className="container mx-auto px-4 pt-32 pb-12 min-h-screen animate-fade-in">
+      {/* Header di Pagina Stiloso */}
+      <div className="text-center mb-16 relative">
+        <h1 className="relative z-10 inline-block text-5xl font-extrabold text-dark-900 font-serif mb-4 leading-tight">
+          Tutte le Ricette
+          {/* Sottolineatura decorativa SVG */}
+          <svg
+            className="absolute -bottom-2 left-0 w-full h-3 text-primary-300 -z-10"
+            viewBox="0 0 100 10"
+            preserveAspectRatio="none"
+          >
+            <path
+              d="M0 10 Q 50 0 100 10"
+              stroke="currentColor"
+              strokeWidth="3"
+              fill="none"
+            />
+          </svg>
+        </h1>
+        <p className="text-xl text-dark-500 max-w-2xl mx-auto mt-4 font-medium">
+          Dai grandi classici alle nuove scoperte. <br />
+          Cosa cuciniamo oggi?
+        </p>
+      </div>
 
-      {/* Barra di Ricerca e Filtri - Layout Unificato */}
-      <div className="mb-12 space-y-6">
-        <div className="relative max-w-2xl mx-auto">
+      {/* Barra di Ricerca Premium */}
+      <div className="mb-12 max-w-3xl mx-auto relative">
+        {/* Glow effect dietro la barra */}
+        <div className="absolute inset-0 bg-primary-200 rounded-3xl blur-xl opacity-30 -z-10 transform rotate-1"></div>
+
+        <div className="relative group z-10">
           <input
             type="text"
-            placeholder="Cerca una ricetta (es. Tiramisù, Pasta al forno)..."
-            className="w-full pl-12 pr-6 py-3 text-lg border-2 border-gray-200 rounded-full focus:ring-4 focus:ring-orange-100 focus:border-orange-500 transition-all shadow-lg"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder="Cerca una ricetta (es. Carbonara)..."
+            // Classe .input-field definita nel CSS globale
+            className="input-field !pl-16 !py-5 !text-lg !rounded-3xl shadow-soft-lg group-hover:-translate-y-1 transition-all"
+            value={filters.search}
+            onChange={(e) => setFilter("search", e.target.value)}
           />
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-orange-500 h-6 w-6" />
+          <Search
+            className="absolute left-6 top-1/2 -translate-y-1/2 text-primary-400 group-focus-within:text-primary-600 transition-colors h-7 w-7"
+            strokeWidth={2.5}
+          />
         </div>
+      </div>
 
-        {/* Passiamo le funzioni di stato al componente filtri (si assume che sia ben stilizzato con bottoni o select) */}
+      {/* Sezione Filtri */}
+      <div className="mb-12 max-w-4xl mx-auto">
         <RecipeFilters
-          activeCategory={selectedCategory}
-          setActiveCategory={setSelectedCategory}
-          activeDifficulty={selectedDifficulty}
-          setActiveDifficulty={setSelectedDifficulty}
+          activeCategory={filters.category}
+          setActiveCategory={(val) => setFilter("category", val)}
+          activeDifficulty={filters.difficulty}
+          setActiveDifficulty={(val) => setFilter("difficulty", val)}
         />
       </div>
 
       {/* Conteggio Risultati */}
-      <div className="text-center text-gray-600 mb-8 font-medium">
-        Trovate **{filteredRecipes.length}** ricette
+      <div className="mb-8 text-sm font-bold text-dark-400 uppercase tracking-wider text-center md:text-left">
+        Risultati:{" "}
+        <span className="text-primary-600">{filteredRecipes.length}</span>
       </div>
 
       {/* Griglia Risultati */}
       {filteredRecipes.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-10">
-          {/* Si assume che RecipeCard abbia un buon stile */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
           {filteredRecipes.map((recipe) => (
             <RecipeCard key={recipe.id} recipe={recipe} />
           ))}
         </div>
       ) : (
-        <div className="text-center py-20 bg-white rounded-xl shadow-xl border-dashed border-2 border-gray-300">
-          <p className="text-2xl font-bold text-gray-800 mb-4 font-serif">
-            Ops! Nessuna ricetta trovata
-          </p>
-          <p className="text-lg text-gray-500 mb-6">
-            Prova a modificare i termini di ricerca o a resettare i filtri.
+        // Stato vuoto (Empty State)
+        <div className="text-center py-24 bg-white rounded-3xl border-2 border-dashed border-cream-200">
+          <Frown className="w-16 h-16 text-cream-300 mx-auto mb-4" />
+          <h3 className="text-2xl font-bold text-dark-700 mb-2 font-serif">
+            Nessuna ricetta trovata
+          </h3>
+          <p className="text-dark-500 mb-6">
+            Prova a cambiare i filtri o cerca qualcos'altro.
           </p>
           <button
-            onClick={() => {
-              setSearchTerm("");
-              setSelectedCategory("Tutte");
-              setSelectedDifficulty("Tutte");
-            }}
-            className="inline-flex items-center px-8 py-3 bg-orange-600 text-white rounded-full font-bold hover:bg-orange-700 transition-all shadow-lg"
+            onClick={resetFilters}
+            className="text-primary-600 font-bold hover:underline hover:text-primary-700 transition-colors"
           >
             Resetta tutti i filtri
           </button>

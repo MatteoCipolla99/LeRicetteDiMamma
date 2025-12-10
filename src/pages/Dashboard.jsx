@@ -1,163 +1,146 @@
 import React, { useMemo } from "react";
 import { Link, Navigate } from "react-router-dom";
-import { ArrowRight, PlusCircle, BookOpen, Heart, Star } from "lucide-react";
+import { ArrowRight, BookOpen, Heart, Star, ChefHat } from "lucide-react";
 import { recipes } from "../data/recipes";
 import { useAuth } from "../context/AuthContext";
 
 const Dashboard = () => {
   const { user, favorites, isFavorite } = useAuth();
 
-  // Redirect se non loggato (Protezione Rotta)
-  if (!user) {
-    return <Navigate to="/" replace />;
-  }
+  if (!user) return <Navigate to="/" replace />;
 
-  // Calcolo statistiche dinamiche con useMemo per performance
   const stats = useMemo(() => {
     const totalRecipes = recipes.length;
-    // La media dei voti è più un placeholder senza un sistema di voto completo
     const avgRating = (
       recipes.reduce((acc, curr) => acc + curr.rating, 0) / (totalRecipes || 1)
     ).toFixed(1);
-
     return { totalRecipes, avgRating };
   }, []);
 
-  // Filtriamo le ricette preferite dell'utente
   const favoriteRecipes = recipes.filter((recipe) => isFavorite(recipe.id));
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-16">
-      {/* Header Personalizzato - Più Impatto */}
-      <header className="bg-gradient-to-br from-orange-600 to-red-500 text-white py-16 shadow-2xl">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center gap-6">
+    <div className="min-h-screen bg-[#fffbf0] pb-20">
+      {/* Immersive Header */}
+      <div className="relative bg-gray-900 text-white py-24 px-4 overflow-hidden">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-orange-600 rounded-full blur-[120px] opacity-20 translate-x-1/2 -translate-y-1/2"></div>
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-red-600 rounded-full blur-[100px] opacity-20 -translate-x-1/2 translate-y-1/2"></div>
+
+        <div className="relative z-10 max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-8 animate-fade-in">
+          <div className="relative group">
+            <div className="absolute -inset-1 bg-gradient-to-r from-orange-500 to-red-500 rounded-full blur opacity-75 group-hover:opacity-100 transition duration-200"></div>
             <img
-              src={
-                user.avatar ||
-                `https://ui-avatars.com/api/?name=${user.name
-                  .split(" ")
-                  .join("+")}&background=fff&color=fb923c&bold=true`
-              }
-              alt="User Avatar"
-              className="w-20 h-20 rounded-full border-4 border-white/50 shadow-lg object-cover"
+              src={user.avatar}
+              alt={user.name}
+              className="relative w-28 h-28 rounded-full border-4 border-gray-900 object-cover shadow-2xl"
             />
-            <div>
-              <h1 className="text-4xl font-extrabold font-serif">
-                Bentornato, {user.name}!
-              </h1>
-              <p className="text-orange-200 text-lg mt-1">
-                Il tuo riepilogo della cucina digitale. Pronti per cucinare?
-              </p>
+          </div>
+          <div className="text-center md:text-left">
+            <h1 className="text-4xl md:text-6xl font-serif font-extrabold mb-2">
+              Ciao, {user.name}
+            </h1>
+            <p className="text-xl text-gray-300 font-light">
+              Ecco cosa succede nella tua cucina oggi.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 -mt-12 relative z-20">
+        {/* Stats Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16 animate-slide-up">
+          <div className="bg-white/80 backdrop-blur-xl p-8 rounded-[2rem] shadow-xl border border-white/50 flex flex-col items-center text-center hover:-translate-y-1 transition-transform">
+            <div className="bg-orange-100 p-4 rounded-full mb-4 text-orange-600">
+              <BookOpen size={32} />
             </div>
-          </div>
-        </div>
-      </header>
-
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-10">
-        {/* KPI Cards Dinamiche - Design Moderno */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
-          <div className="p-8 bg-white rounded-2xl shadow-xl hover:shadow-2xl transition-all border-t-4 border-orange-500">
-            <BookOpen className="w-10 h-10 text-orange-400 mb-3" />
-            <p className="text-4xl font-extrabold text-gray-900">
+            <span className="text-4xl font-extrabold text-gray-900">
               {stats.totalRecipes}
-            </p>
-            <p className="text-gray-500 font-medium mt-1">
-              Ricette Disponibili
-            </p>
+            </span>
+            <span className="text-sm font-bold text-gray-400 uppercase tracking-widest mt-1">
+              Ricette Globali
+            </span>
           </div>
 
-          <div className="p-8 bg-white rounded-2xl shadow-xl hover:shadow-2xl transition-all border-t-4 border-red-500">
-            <Heart className="w-10 h-10 text-red-400 mb-3" />
-            <p className="text-4xl font-extrabold text-gray-900">
+          <div className="bg-white/80 backdrop-blur-xl p-8 rounded-[2rem] shadow-xl border border-white/50 flex flex-col items-center text-center hover:-translate-y-1 transition-transform">
+            <div className="bg-red-100 p-4 rounded-full mb-4 text-red-500">
+              <Heart size={32} />
+            </div>
+            <span className="text-4xl font-extrabold text-gray-900">
               {favorites.length}
-            </p>
-            <p className="text-gray-500 font-medium mt-1">I tuoi Preferiti</p>
+            </span>
+            <span className="text-sm font-bold text-gray-400 uppercase tracking-widest mt-1">
+              Preferiti
+            </span>
           </div>
 
-          <div className="p-8 bg-white rounded-2xl shadow-xl hover:shadow-2xl transition-all border-t-4 border-yellow-500">
-            <Star className="w-10 h-10 text-yellow-400 mb-3" />
-            <p className="text-4xl font-extrabold text-gray-900">
+          <div className="bg-white/80 backdrop-blur-xl p-8 rounded-[2rem] shadow-xl border border-white/50 flex flex-col items-center text-center hover:-translate-y-1 transition-transform">
+            <div className="bg-yellow-100 p-4 rounded-full mb-4 text-yellow-600">
+              <Star size={32} />
+            </div>
+            <span className="text-4xl font-extrabold text-gray-900">
               {stats.avgRating}
-            </p>
-            <p className="text-gray-500 font-medium mt-1">
-              Media Voti Community
-            </p>
+            </span>
+            <span className="text-sm font-bold text-gray-400 uppercase tracking-widest mt-1">
+              Media Voti
+            </span>
           </div>
         </div>
 
-        {/* Sezione Preferiti */}
-        <section>
-          <div className="flex justify-between items-center mb-8 border-b pb-4 border-gray-200">
-            <h2 className="text-3xl font-bold text-gray-800 font-serif flex items-center gap-2">
-              <Heart className="text-red-500 fill-red-500" size={28} />
-              Il tuo Ricettario Digitale
-            </h2>
-            <Link
-              to="/recipes"
-              className="text-orange-600 hover:text-orange-700 font-bold flex items-center group transition-colors"
-            >
-              Scopri nuove ricette{" "}
-              <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
-            </Link>
-          </div>
+        {/* Favorites Section */}
+        <div className="flex justify-between items-end mb-8">
+          <h2 className="text-3xl font-serif font-bold text-gray-900">
+            Il tuo Ricettario del Cuore
+          </h2>
+          <Link
+            to="/recipes"
+            className="text-orange-600 font-bold hover:text-orange-700 flex items-center gap-1"
+          >
+            Sfoglia tutto <ArrowRight size={18} />
+          </Link>
+        </div>
 
-          {favoriteRecipes.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {favoriteRecipes.map((recipe) => (
-                <div
-                  key={recipe.id}
-                  className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all overflow-hidden group"
-                >
-                  <div className="relative h-56 overflow-hidden">
-                    <img
-                      src={recipe.image}
-                      alt={recipe.title}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                    />
-                    <div className="absolute top-3 right-3 bg-white/90 px-3 py-1 rounded-full text-xs font-bold text-gray-700 shadow-md">
-                      {recipe.time} min
-                    </div>
-                  </div>
-                  <div className="p-6">
-                    <span className="text-xs font-extrabold text-orange-600 uppercase tracking-widest">
-                      {recipe.category}
-                    </span>
-                    <h3 className="text-2xl font-bold mb-3 text-gray-900 mt-1 truncate">
-                      {recipe.title}
-                    </h3>
-                    <Link
-                      to={`/recipe/${recipe.id}`} // Nota: path corretto è /recipe/:id
-                      className="inline-flex items-center px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 transition-colors font-bold text-md shadow-md"
-                    >
-                      Cucina Ora
-                    </Link>
+        {favoriteRecipes.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {favoriteRecipes.map((recipe) => (
+              <Link
+                to={`/recipe/${recipe.id}`}
+                key={recipe.id}
+                className="group bg-white rounded-3xl p-4 shadow-sm hover:shadow-xl transition-all border border-gray-100 flex items-center gap-4"
+              >
+                <img
+                  src={recipe.image}
+                  className="w-24 h-24 rounded-2xl object-cover"
+                  alt={recipe.title}
+                />
+                <div>
+                  <span className="text-xs font-bold text-orange-500 uppercase">
+                    {recipe.category}
+                  </span>
+                  <h3 className="font-serif font-bold text-lg text-gray-800 leading-tight group-hover:text-orange-600 transition-colors line-clamp-2">
+                    {recipe.title}
+                  </h3>
+                  <div className="flex items-center gap-1 mt-2 text-gray-400 text-xs font-bold">
+                    <ChefHat size={14} /> {recipe.difficulty}
                   </div>
                 </div>
-              ))}
-            </div>
-          ) : (
-            <div className="bg-white rounded-2xl shadow-xl p-16 text-center border-2 border-dashed border-gray-300">
-              <div className="bg-red-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6">
-                <Heart className="w-8 h-8 text-red-500" />
-              </div>
-              <h3 className="text-2xl font-bold text-gray-800 mb-3 font-serif">
-                Nessun preferito ancora
-              </h3>
-              <p className="text-gray-500 mb-8 text-lg">
-                Salva le ricette che ti piacciono di più cliccando sull'icona
-                del cuore!
-              </p>
-              <Link
-                to="/recipes"
-                className="inline-flex items-center px-8 py-3 bg-orange-600 text-white rounded-full font-bold hover:bg-orange-700 transition-all shadow-lg"
-              >
-                Esplora Ricettario
               </Link>
-            </div>
-          )}
-        </section>
-      </main>
+            ))}
+          </div>
+        ) : (
+          <div className="bg-white border-2 border-dashed border-gray-200 rounded-[2rem] p-12 text-center">
+            <Heart className="mx-auto h-12 w-12 text-gray-300 mb-4" />
+            <h3 className="text-lg font-medium text-gray-900">
+              Nessun preferito
+            </h3>
+            <p className="mt-1 text-gray-500">
+              Inizia a esplorare e salva ciò che ami.
+            </p>
+            <Link to="/recipes" className="mt-6 inline-flex btn-primary">
+              Esplora Ricette
+            </Link>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

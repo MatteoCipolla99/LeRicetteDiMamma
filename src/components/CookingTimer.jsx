@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Play, Pause, RotateCcw, AlarmClock } from "lucide-react";
+import { Play, Pause, RotateCcw, AlarmClock, Plus, Minus } from "lucide-react";
 
 const CookingTimer = () => {
-  const [minutes, setMinutes] = useState(10); // Default 10 min
+  const [minutes, setMinutes] = useState(10);
   const [seconds, setSeconds] = useState(0);
   const [isActive, setIsActive] = useState(false);
 
@@ -14,13 +14,14 @@ const CookingTimer = () => {
           if (minutes === 0) {
             clearInterval(interval);
             setIsActive(false);
-            alert("⏰ Timer scaduto! Controlla la cottura!"); // In prod useremmo un suono
+            // Qui potresti aggiungere un suono reale
+            alert("⏰ DRIIIN! Timer scaduto!");
           } else {
-            setMinutes(minutes - 1);
+            setMinutes((m) => m - 1);
             setSeconds(59);
           }
         } else {
-          setSeconds(seconds - 1);
+          setSeconds((s) => s - 1);
         }
       }, 1000);
     } else if (!isActive && seconds !== 0) {
@@ -38,69 +39,58 @@ const CookingTimer = () => {
   };
 
   const adjustTime = (amount) => {
-    setMinutes((prev) => Math.max(1, prev + amount));
+    const newMin = minutes + amount;
+    if (newMin >= 1 && newMin <= 120) setMinutes(newMin);
   };
 
   return (
-    <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
-      <div className="flex items-center gap-2 mb-4 text-gray-700">
-        <AlarmClock className="w-5 h-5 text-orange-500" />
-        <h3 className="font-bold">Timer di Cucina</h3>
+    <div className="flex flex-col items-center">
+      <div className="flex items-center gap-2 mb-6 text-gray-400 uppercase tracking-widest text-xs font-bold">
+        <AlarmClock size={16} /> Timer di Cucina
       </div>
 
-      <div className="flex flex-col items-center">
-        <div className="text-5xl font-mono font-bold text-gray-800 mb-6 tracking-wider">
-          {String(minutes).padStart(2, "0")}:{String(seconds).padStart(2, "0")}
-        </div>
+      <div className="font-mono text-7xl font-bold mb-8 tabular-nums tracking-tight">
+        {String(minutes).padStart(2, "0")}:{String(seconds).padStart(2, "0")}
+      </div>
 
-        <div className="flex gap-4 w-full justify-center">
+      <div className="flex items-center gap-6 mb-8">
+        <button
+          onClick={resetTimer}
+          className="p-4 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
+          title="Resetta"
+        >
+          <RotateCcw size={20} />
+        </button>
+
+        <button
+          onClick={toggleTimer}
+          className={`p-6 rounded-full shadow-lg transform transition-all hover:scale-105 active:scale-95 ${
+            isActive
+              ? "bg-yellow-500 text-white shadow-yellow-500/40"
+              : "bg-green-500 text-white shadow-green-500/40"
+          }`}
+        >
+          {isActive ? (
+            <Pause size={32} fill="currentColor" />
+          ) : (
+            <Play size={32} fill="currentColor" className="ml-1" />
+          )}
+        </button>
+
+        <div className="flex flex-col gap-2">
           <button
-            onClick={toggleTimer}
-            className={`flex items-center px-6 py-2 rounded-full font-bold text-white transition-all ${
-              isActive
-                ? "bg-yellow-500 hover:bg-yellow-600"
-                : "bg-green-500 hover:bg-green-600"
-            }`}
+            onClick={() => adjustTime(1)}
+            className="p-2 bg-white/10 hover:bg-white/20 rounded-lg text-white"
           >
-            {isActive ? (
-              <Pause className="w-5 h-5 mr-2" />
-            ) : (
-              <Play className="w-5 h-5 mr-2" />
-            )}
-            {isActive ? "Pausa" : "Avvia"}
+            <Plus size={16} />
           </button>
-
           <button
-            onClick={resetTimer}
-            className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-600 transition-colors"
-            title="Resetta"
+            onClick={() => adjustTime(-1)}
+            className="p-2 bg-white/10 hover:bg-white/20 rounded-lg text-white"
           >
-            <RotateCcw className="w-5 h-5" />
+            <Minus size={16} />
           </button>
         </div>
-
-        {!isActive && (
-          <div className="flex gap-2 mt-4">
-            <button
-              onClick={() => adjustTime(-1)}
-              className="px-3 py-1 text-sm bg-gray-100 rounded hover:bg-gray-200"
-            >
-              -1 min
-            </button>
-            <button
-              onClick={() => adjustTime(1)}
-              className="px-3 py-1 text-sm bg-gray-100 rounded hover:bg-gray-200"
-            >
-              +1 min
-            </button>
-            <button
-              onClick={() => adjustTime(5)}
-              className="px-3 py-1 text-sm bg-gray-100 rounded hover:bg-gray-200"
-            >
-              +5 min
-            </button>
-          </div>
-        )}
       </div>
     </div>
   );

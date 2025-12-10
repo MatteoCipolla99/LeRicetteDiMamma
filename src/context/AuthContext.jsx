@@ -1,26 +1,21 @@
 import { createContext, useContext, useState, useEffect } from "react";
+import storage from "../services/storage";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  // Stato Utente (persistente)
-  const [user, setUser] = useState(() => {
-    const savedUser = localStorage.getItem("user");
-    return savedUser ? JSON.parse(savedUser) : null;
-  });
-
-  // Stato Preferiti (persistente)
-  const [favorites, setFavorites] = useState(() => {
-    const savedFavs = localStorage.getItem("favorites");
-    return savedFavs ? JSON.parse(savedFavs) : [];
-  });
+  const [user, setUser] = useState(() => storage.getUser()); // Pulito!
+  const [favorites, setFavorites] = useState(() =>
+    storage.get("favorites", [])
+  ); // Pulito!
 
   useEffect(() => {
-    localStorage.setItem("user", JSON.stringify(user));
+    if (user) storage.setUser(user);
+    else storage.removeUser();
   }, [user]);
 
   useEffect(() => {
-    localStorage.setItem("favorites", JSON.stringify(favorites));
+    storage.set("favorites", favorites);
   }, [favorites]);
 
   const login = (userData) => {

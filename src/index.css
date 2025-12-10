@@ -1,96 +1,111 @@
 @import "tailwindcss";
 
-/* Reset e stili base */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+@theme {
+  /* --- TIPOGRAFIA --- */
+  --font-serif: "Fraunces", serif;
+  --font-sans: "Inter", sans-serif;
+
+  /* --- COLORI PREMIUM --- */
+  /* Primary: Un arancione terracotta bruciato, caldo e invitante */
+  --color-primary-50: #fff7ed;
+  --color-primary-100: #ffedd5;
+  --color-primary-200: #fed7aa;
+  --color-primary-300: #fdba74;
+  --color-primary-400: #fb923c;
+  --color-primary-500: #f97316; /* Colore base */
+  --color-primary-600: #ea580c;
+  --color-primary-700: #c2410c;
+  --color-primary-800: #9a3412;
+  --color-primary-900: #7c2d12;
+
+  /* Secondary: Un crema caldo per gli sfondi, non il solito bianco freddo */
+  --color-cream-50: #fafaf9;
+  --color-cream-100: #f5f5f4;
+  --color-cream-200: #e7e5e4;
+  --color-cream-300: #d6d3d1;
+
+  /* Accent: Un verde salvia per freschezza (erbe aromatiche) */
+  --color-sage-500: #84a98c;
+  --color-sage-600: #52796f;
+
+  /* Text: Grigio scuro caldo, mai nero puro */
+  --color-dark-900: #1c1917;
+  --color-dark-700: #44403c;
+  --color-dark-500: #78716c;
+
+  /* --- OMBRE MORBIDE --- */
+  --shadow-soft-sm: 0 2px 4px rgb(0 0 0 / 0.05), 0 1px 2px rgb(0 0 0 / 0.1);
+  --shadow-soft-md: 0 8px 16px rgb(0 0 0 / 0.06), 0 4px 8px rgb(0 0 0 / 0.1);
+  --shadow-soft-lg: 0 16px 32px rgb(0 0 0 / 0.08), 0 8px 16px rgb(0 0 0 / 0.1);
+  --shadow-soft-xl: 0 24px 48px rgb(0 0 0 / 0.12);
 }
 
-body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  background-color: #f7fafc; /* Leggero sfondo per contrasto */
-}
-
-/* Animazioni personalizzate */
-@layer utilities {
-  .animate-fade-in {
-    animation: fadeIn 0.5s ease-in;
+/* --- STILI GLOBALI --- */
+@layer base {
+  html {
+    scroll-behavior: smooth;
   }
 
-  .animate-fade-in-up {
-    animation: fadeInUp 0.5s ease-out;
-  }
-
-  .animate-fade-in-down {
-    animation: fadeInDown 0.3s ease-out;
-  }
-
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
-  }
-
-  @keyframes fadeInUp {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  @keyframes fadeInDown {
-    from {
-      opacity: 0;
-      transform: translateY(-10px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-}
-
-/* Componenti riutilizzabili */
-@layer components {
-  .btn-primary {
-    /* Stile Button Primary coerente con il tema arancione */
-    @apply px-6 py-3 bg-orange-600 hover:bg-orange-700 text-white font-extrabold rounded-full transition-all shadow-lg hover:shadow-orange-600/40 flex items-center justify-center gap-2;
-  }
-
-  .input-field {
-    /* Stile Input Field pulito e focalizzato */
-    @apply w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-orange-500 focus:ring-4 focus:ring-orange-500/20 transition-all text-gray-800;
-  }
-
-  .label {
-    /* Stile Label più leggibile e professionale */
-    @apply block text-xs font-bold text-gray-600 mb-2 uppercase tracking-widest;
-  }
-}
-
-/* Stili per la stampa */
-@media print {
   body {
-    background: white;
+    @apply bg-cream-100 text-dark-700 font-sans selection:bg-primary-200 selection:text-primary-900;
+    /* Aggiungiamo una texture granulosa sottile per togliere il "piattume" */
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
   }
 
-  .print\:hidden {
-    display: none !important;
+  /* Titoli eleganti */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-serif font-black text-dark-900 tracking-tight;
   }
 
-  .print\:p-0 {
-    padding: 0 !important;
+  h1 {
+    @apply text-4xl md:text-5xl lg:text-6xl leading-tight;
+  }
+  h2 {
+    @apply text-3xl md:text-4xl;
+  }
+  h3 {
+    @apply text-2xl md:text-3xl;
+  }
+}
+
+/* --- COMPONENTI RIUTILIZZABILI --- */
+@layer components {
+  /* Bottone Primario Moderno */
+  .btn-primary {
+    @apply inline-flex items-center justify-center px-6 py-3 bg-primary-500 text-white font-bold rounded-full shadow-soft-md hover:bg-primary-600 hover:-translate-y-0.5 transition-all duration-300 active:translate-y-0 active:shadow-soft-sm;
+  }
+
+  /* Bottone Secondario */
+  .btn-secondary {
+    @apply inline-flex items-center justify-center px-6 py-3 bg-white text-primary-700 font-bold rounded-full border-2 border-primary-100 shadow-soft-sm hover:border-primary-300 hover:bg-primary-50 transition-all duration-300;
+  }
+
+  /* Card Base */
+  .card-base {
+    @apply bg-white rounded-[2rem] border border-cream-200/50 shadow-soft-md p-6;
+  }
+
+  /* Input Fields belli */
+  .input-field {
+    @apply w-full px-5 py-3.5 bg-white border-2 border-cream-200 rounded-2xl focus:border-primary-400 focus:ring-4 focus:ring-primary-100 outline-none transition-all text-dark-900 font-medium placeholder:text-dark-500;
+  }
+}
+
+/* Animazioni custom */
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s ease-out forwards;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
