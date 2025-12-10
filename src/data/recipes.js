@@ -1,4 +1,4 @@
-// Database di ricette aggiornato con immagini HD
+// Database di ricette completo con reviews array
 export const recipes = [
   {
     id: 1,
@@ -25,7 +25,20 @@ export const recipes = [
     ],
     tips: "Mai, e dico mai, usare la panna! Il segreto della cremosità è l'amido della pasta e la temperatura giusta.",
     rating: 4.9,
-    reviews: 156,
+    reviews: [
+      {
+        user: "Mario Rossi",
+        rating: 5,
+        comment: "Perfetta! Proprio come la faceva mia nonna.",
+        date: "15/11/2024",
+      },
+      {
+        user: "Giulia Bianchi",
+        rating: 4,
+        comment: "Ottima, ma ho usato un po' troppo pepe.",
+        date: "10/11/2024",
+      },
+    ],
     tags: ["romana", "classico", "veloce"],
   },
   {
@@ -55,7 +68,14 @@ export const recipes = [
     ],
     tips: "Il riposo è fondamentale: lascialo in frigo almeno 4 ore, meglio se tutta la notte.",
     rating: 5.0,
-    reviews: 320,
+    reviews: [
+      {
+        user: "Anna Verdi",
+        rating: 5,
+        comment: "Il migliore che abbia mai fatto!",
+        date: "20/11/2024",
+      },
+    ],
     tags: ["dolce", "caffè", "dessert"],
   },
   {
@@ -86,7 +106,7 @@ export const recipes = [
     ],
     tips: "Il vero ragù deve 'pippiare' (bollire molto lentamente) per ore. Non avere fretta.",
     rating: 4.8,
-    reviews: 98,
+    reviews: [],
     tags: ["tradizione", "domenica", "carne"],
   },
   {
@@ -115,7 +135,7 @@ export const recipes = [
     ],
     tips: "È molto più buona mangiata tiepida o addirittura il giorno dopo!",
     rating: 4.9,
-    reviews: 210,
+    reviews: [],
     tags: ["vegetariano", "estivo", "forno"],
   },
   {
@@ -123,7 +143,7 @@ export const recipes = [
     title: "Pizza Margherita Fatta in Casa",
     category: "Pizze e Lievitati",
     difficulty: "Difficile",
-    time: 1440, // 24h
+    time: 1440,
     servings: 4,
     image:
       "https://images.unsplash.com/photo-1574071318508-1cdbab80d002?q=80&w=2000&auto=format&fit=crop",
@@ -144,7 +164,7 @@ export const recipes = [
     ],
     tips: "Per un risultato come in pizzeria, usa una pietra refrattaria nel forno di casa.",
     rating: 4.7,
-    reviews: 180,
+    reviews: [],
     tags: ["lievitati", "pizza", "weekend"],
   },
   {
@@ -173,11 +193,14 @@ export const recipes = [
     ],
     tips: "Per un taglio perfetto, scalda la lama del coltello con acqua calda prima di affondarla nella torta.",
     rating: 4.8,
-    reviews: 145,
+    reviews: [],
     tags: ["freddo", "estivo", "frutta"],
   },
 ];
 
 export const statsData = {
-  // Dati di esempio per eventuali grafici futuri
+  totalRecipes: recipes.length,
+  totalReviews: recipes.reduce((sum, r) => sum + r.reviews.length, 0),
+  avgRating:
+    recipes.reduce((sum, r) => sum + r.rating, 0) / recipes.length || 0,
 };

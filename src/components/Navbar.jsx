@@ -12,6 +12,7 @@ import {
   X,
   PlusCircle,
   Search,
+  Home,
 } from "lucide-react";
 import LoginModal from "./LoginModal";
 
@@ -25,21 +26,20 @@ const Navbar = () => {
 
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
 
-  // Effetto per rilevare lo scroll e cambiare stile
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Chiudi menu mobile al cambio rotta
   useEffect(() => setIsMobileMenuOpen(false), [location]);
 
-  const NavLink = ({ to, icon: Icon, label, primary = false }) => {
+  const NavLink = ({ to, icon: Icon, label, primary = false, onClick }) => {
     const isActive = location.pathname === to;
     return (
       <Link
         to={to}
+        onClick={onClick}
         className={`flex items-center gap-2 px-4 py-2 rounded-full font-bold transition-all duration-300 ${
           primary
             ? "bg-primary-500 text-white hover:bg-primary-600 shadow-primary-200/50 shadow-lg"
@@ -56,7 +56,6 @@ const Navbar = () => {
 
   return (
     <>
-      {/* Navbar Fluttuante con effetto vetro */}
       <header
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
           isScrolled
@@ -66,7 +65,6 @@ const Navbar = () => {
       >
         <div className="container mx-auto px-6">
           <nav className="flex justify-between items-center">
-            {/* Logo Moderno */}
             <Link
               to="/"
               className="flex items-center gap-3 group relative z-10"
@@ -141,13 +139,83 @@ const Navbar = () => {
         </div>
       </header>
 
-      {/* Mobile Menu Overlay (Semplificato per brevità, ma con stile) */}
+      {/* Mobile Menu Overlay COMPLETO */}
       {isMobileMenuOpen && (
-        <div className="fixed inset-0 z-40 bg-cream-100/95 backdrop-blur-xl flex flex-col items-center justify-center space-y-6 animate-fade-in">
-          {/* ... Qui andrebbero i link mobile con lo stesso stile ... */}
-          <span className="font-serif text-2xl text-primary-700">
-            Menu Mobile...
-          </span>
+        <div className="fixed inset-0 z-40 bg-white flex flex-col animate-fade-in lg:hidden">
+          <div className="flex-1 overflow-y-auto pt-32 pb-20 px-6">
+            <nav className="space-y-4">
+              <NavLink
+                to="/"
+                icon={Home}
+                label="Home"
+                onClick={() => setIsMobileMenuOpen(false)}
+              />
+              <NavLink
+                to="/recipes"
+                icon={Search}
+                label="Cerca Ricette"
+                onClick={() => setIsMobileMenuOpen(false)}
+              />
+              <NavLink
+                to="/favorites"
+                icon={Heart}
+                label="Preferiti"
+                onClick={() => setIsMobileMenuOpen(false)}
+              />
+              <NavLink
+                to="/shopping-list"
+                icon={ShoppingCart}
+                label={`Lista Spesa (${totalItems})`}
+                onClick={() => setIsMobileMenuOpen(false)}
+              />
+
+              <div className="pt-6 border-t border-cream-200">
+                {user ? (
+                  <>
+                    <Link
+                      to="/dashboard"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="flex items-center gap-3 p-4 bg-primary-50 rounded-2xl mb-3"
+                    >
+                      <div className="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center text-primary-700">
+                        <User size={24} />
+                      </div>
+                      <div>
+                        <p className="font-bold text-gray-900">{user.name}</p>
+                        <p className="text-sm text-gray-500">Vedi profilo</p>
+                      </div>
+                    </Link>
+                    <Link
+                      to="/add-recipe"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="btn-primary w-full justify-center mb-3"
+                    >
+                      <PlusCircle size={18} /> Aggiungi Ricetta
+                    </Link>
+                    <button
+                      onClick={() => {
+                        logout();
+                        setIsMobileMenuOpen(false);
+                      }}
+                      className="w-full text-red-500 font-bold py-3 rounded-2xl hover:bg-red-50"
+                    >
+                      Esci
+                    </button>
+                  </>
+                ) : (
+                  <button
+                    onClick={() => {
+                      setIsModalOpen(true);
+                      setIsMobileMenuOpen(false);
+                    }}
+                    className="btn-primary w-full justify-center"
+                  >
+                    Accedi
+                  </button>
+                )}
+              </div>
+            </nav>
+          </div>
         </div>
       )}
 
