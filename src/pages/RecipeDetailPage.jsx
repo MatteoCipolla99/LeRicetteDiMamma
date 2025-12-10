@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { recipes } from "../data/recipes";
 import { useAuth } from "../context/AuthContext";
-import { useShoppingList } from "../context/ShoppingListContext"; // NUOVO
+import { useShoppingList } from "../context/ShoppingListContext";
 import {
   Clock,
   Users,
@@ -17,21 +17,19 @@ import {
 import CookingTimer from "../components/CookingTimer";
 import RecipeReviews from "../components/RecipeReviews";
 import PrintableRecipe from "../components/PrintableRecipe";
-import SEO from "../components/SEO"; // NUOVO
+import SEO from "../components/SEO";
 
 const RecipeDetailPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  // Nota: Idealmente dovremmo usare useRecipes() qui per trovare anche le custom,
-  // ma per semplicità uso l'array importato o lo stato globale se hai aggiornato il context
   const recipe = recipes.find((r) => r.id === parseInt(id));
 
   const { user, toggleFavorite, isFavorite } = useAuth();
-  const { addIngredients } = useShoppingList(); // NUOVO
+  const { addIngredients } = useShoppingList();
 
   const [localReviews, setLocalReviews] = useState(recipe?.reviews || []);
   const [isPrinting, setIsPrinting] = useState(false);
-  const [addedToCart, setAddedToCart] = useState(false); // Feedback visivo
+  const [addedToCart, setAddedToCart] = useState(false);
 
   if (!recipe)
     return <div className="text-center py-20">Ricetta non trovata!</div>;
@@ -76,7 +74,6 @@ const RecipeDetailPage = () => {
 
   return (
     <div className="container mx-auto px-4 py-8 animate-fade-in">
-      {/* SEO Dinamico */}
       <SEO
         title={recipe.title}
         description={`Scopri come preparare ${recipe.title}. Tempo: ${recipe.time} min. Difficoltà: ${recipe.difficulty}.`}
@@ -86,51 +83,52 @@ const RecipeDetailPage = () => {
 
       <button
         onClick={() => navigate(-1)}
-        className="flex items-center text-gray-600 hover:text-orange-600 mb-6 transition-colors"
+        className="flex items-center text-gray-600 hover:text-orange-600 mb-6 transition-colors font-medium"
       >
-        <ArrowLeft className="mr-2 h-4 w-4" /> Torna alle ricette
+        <ArrowLeft className="mr-2 h-5 w-5" /> Torna al ricettario
       </button>
 
-      <div className="bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100">
-        {/* Hero Image */}
-        <div className="relative h-[400px] group">
+      <div className="bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-100">
+        {/* Hero Image e Dettagli Principali */}
+        <div className="relative h-[450px] group">
           <img
             src={recipe.image}
             alt={recipe.title}
             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex items-end">
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent flex items-end">
             <div className="p-8 md:p-12 text-white w-full">
               <div className="flex flex-col md:flex-row justify-between items-end gap-6">
                 <div>
-                  <span className="bg-orange-500/90 backdrop-blur text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide border border-orange-400">
+                  <span className="bg-orange-500/90 backdrop-blur text-sm font-bold px-4 py-1 rounded-full uppercase tracking-widest border border-orange-400 shadow-md">
                     {recipe.category}
                   </span>
-                  <h1 className="text-4xl md:text-5xl font-bold mt-3 font-serif leading-tight shadow-black drop-shadow-lg">
+                  <h1 className="text-5xl md:text-6xl font-extrabold mt-3 font-serif leading-tight shadow-black drop-shadow-lg">
                     {recipe.title}
                   </h1>
                 </div>
 
-                <div className="flex gap-3">
+                {/* Azioni */}
+                <div className="flex gap-4">
                   <button
                     onClick={handleShare}
-                    className="p-3 bg-white/20 backdrop-blur-md rounded-full hover:bg-white/40 transition-all text-white"
+                    className="p-3 bg-white/20 backdrop-blur-md rounded-full hover:bg-white/40 transition-all text-white shadow-lg"
                     title="Condividi"
                   >
                     <Share2 className="h-6 w-6" />
                   </button>
                   <button
                     onClick={() => setIsPrinting(true)}
-                    className="p-3 bg-white/20 backdrop-blur-md rounded-full hover:bg-white/40 transition-all text-white"
+                    className="p-3 bg-white/20 backdrop-blur-md rounded-full hover:bg-white/40 transition-all text-white shadow-lg"
                     title="Stampa"
                   >
                     <Printer className="h-6 w-6" />
                   </button>
                   <button
                     onClick={() => toggleFavorite(recipe.id)}
-                    className={`p-3 rounded-full transition-all hover:scale-110 ${
+                    className={`p-3 rounded-full transition-all hover:scale-110 shadow-lg ${
                       isFav
-                        ? "bg-red-500 text-white shadow-lg shadow-red-500/30"
+                        ? "bg-red-500 text-white shadow-red-500/50"
                         : "bg-white/20 backdrop-blur-md hover:bg-white/40 text-white"
                     }`}
                     title="Preferiti"
@@ -146,53 +144,57 @@ const RecipeDetailPage = () => {
         </div>
 
         <div className="grid md:grid-cols-3 gap-12 p-8 md:p-12">
-          <div className="md:col-span-2 space-y-10">
-            {/* Meta Info */}
-            <div className="flex justify-between bg-orange-50 p-6 rounded-2xl text-orange-900 border border-orange-100">
-              <div className="flex flex-col items-center gap-1">
-                <Clock className="h-6 w-6 text-orange-500" />
-                <span className="font-bold text-lg">{recipe.time}'</span>
-                <span className="text-xs uppercase tracking-wider opacity-70">
-                  Tempo
+          <div className="md:col-span-2 space-y-12">
+            {/* Meta Info Migliorata */}
+            <div className="flex justify-around bg-orange-50 p-8 rounded-2xl text-orange-900 border border-orange-100 shadow-inner">
+              <div className="flex flex-col items-center gap-2">
+                <Clock className="h-7 w-7 text-orange-600" />
+                <span className="font-extrabold text-2xl">{recipe.time}'</span>
+                <span className="text-xs uppercase tracking-wider font-bold opacity-80">
+                  Tempo di Cottura
                 </span>
               </div>
               <div className="w-px bg-orange-200"></div>
-              <div className="flex flex-col items-center gap-1">
-                <Users className="h-6 w-6 text-orange-500" />
-                <span className="font-bold text-lg">{recipe.servings}</span>
-                <span className="text-xs uppercase tracking-wider opacity-70">
+              <div className="flex flex-col items-center gap-2">
+                <Users className="h-7 w-7 text-orange-600" />
+                <span className="font-extrabold text-2xl">
+                  {recipe.servings}
+                </span>
+                <span className="text-xs uppercase tracking-wider font-bold opacity-80">
                   Porzioni
                 </span>
               </div>
               <div className="w-px bg-orange-200"></div>
-              <div className="flex flex-col items-center gap-1">
-                <ChefHat className="h-6 w-6 text-orange-500" />
-                <span className="font-bold text-lg">{recipe.difficulty}</span>
-                <span className="text-xs uppercase tracking-wider opacity-70">
+              <div className="flex flex-col items-center gap-2">
+                <ChefHat className="h-7 w-7 text-orange-600" />
+                <span className="font-extrabold text-2xl">
+                  {recipe.difficulty}
+                </span>
+                <span className="text-xs uppercase tracking-wider font-bold opacity-80">
                   Difficoltà
                 </span>
               </div>
             </div>
 
-            {/* Ingredienti + Shopping List Btn */}
+            {/* Ingredienti + Shopping List Btn con feedback */}
             <section>
               <div className="flex justify-between items-center mb-6 border-b pb-4">
-                <h2 className="text-2xl font-bold text-gray-800 font-serif">
+                <h2 className="text-3xl font-bold text-gray-800 font-serif">
                   Ingredienti
                 </h2>
                 <button
                   onClick={handleAddToCart}
                   disabled={addedToCart}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-sm transition-all ${
+                  className={`flex items-center gap-2 px-5 py-2.5 rounded-full font-bold text-md transition-all transform hover:-translate-y-0.5 shadow-md ${
                     addedToCart
-                      ? "bg-green-100 text-green-700"
-                      : "bg-orange-100 text-orange-700 hover:bg-orange-200"
+                      ? "bg-green-500 text-white shadow-green-500/30"
+                      : "bg-orange-600 text-white hover:bg-orange-700 shadow-orange-600/30"
                   }`}
                 >
                   {addedToCart ? (
-                    <Check size={18} />
+                    <Check size={20} />
                   ) : (
-                    <ShoppingCart size={18} />
+                    <ShoppingCart size={20} />
                   )}
                   {addedToCart ? "Aggiunti alla lista!" : "Aggiungi alla Spesa"}
                 </button>
@@ -201,27 +203,31 @@ const RecipeDetailPage = () => {
                 {recipe.ingredients.map((ing, idx) => (
                   <li
                     key={idx}
-                    className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl hover:bg-orange-50/50 transition-colors border border-transparent hover:border-orange-100"
+                    className="flex items-start gap-4 p-4 bg-gray-50 rounded-xl hover:bg-orange-50 transition-colors border-l-4 border-orange-400"
                   >
-                    <div className="h-2 w-2 rounded-full bg-orange-400 flex-shrink-0" />
-                    <span className="text-gray-700 font-medium">{ing}</span>
+                    <div className="flex-shrink-0 mt-1">
+                      <Check className="h-5 w-5 text-orange-500" />
+                    </div>
+                    <span className="text-gray-700 font-medium text-lg">
+                      {ing}
+                    </span>
                   </li>
                 ))}
               </ul>
             </section>
 
-            {/* Istruzioni */}
+            {/* Istruzioni con stile 'stepper' */}
             <section>
-              <h2 className="text-2xl font-bold text-gray-800 mb-6 font-serif border-b pb-4">
-                Procedimento
+              <h2 className="text-3xl font-bold text-gray-800 mb-8 font-serif border-b pb-4">
+                Procedimento (Passo dopo Passo)
               </h2>
-              <div className="space-y-8">
+              <div className="space-y-10">
                 {(recipe.instructions || recipe.steps).map((step, idx) => (
                   <div key={idx} className="flex gap-6 group">
-                    <div className="flex-shrink-0 w-10 h-10 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center font-bold text-lg group-hover:bg-orange-500 group-hover:text-white transition-colors shadow-sm">
+                    <div className="flex-shrink-0 w-12 h-12 bg-orange-500 text-white rounded-full flex items-center justify-center font-extrabold text-xl shadow-lg border-2 border-orange-600 group-hover:bg-white group-hover:text-orange-600 transition-colors duration-500">
                       {idx + 1}
                     </div>
-                    <p className="text-gray-700 leading-relaxed text-lg mt-1">
+                    <p className="text-gray-700 leading-relaxed text-lg pt-1">
                       {step}
                     </p>
                   </div>
@@ -229,9 +235,13 @@ const RecipeDetailPage = () => {
               </div>
             </section>
 
-            <div className="my-12 p-1 bg-gray-100 rounded-2xl">
+            <div className="my-12 p-6 bg-gray-100 rounded-2xl shadow-inner">
+              <h3 className="text-xl font-bold text-gray-800 mb-4">
+                Tempo di Cottura? Usa il nostro Timer!
+              </h3>
               <CookingTimer />
             </div>
+
             <RecipeReviews
               reviews={localReviews}
               onAddReview={handleAddReview}
@@ -239,37 +249,46 @@ const RecipeDetailPage = () => {
             />
           </div>
 
+          {/* Sidebar Consigli e Nutrizionali */}
           <div className="md:col-span-1">
-            <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-lg sticky top-28">
-              <div className="bg-orange-500 w-12 h-12 rounded-full flex items-center justify-center mb-4 -mt-10 border-4 border-white shadow-md">
-                <span className="text-2xl">💡</span>
+            <div className="bg-white p-8 rounded-2xl border border-gray-100 shadow-xl sticky top-28 space-y-8">
+              {/* Il Consiglio di Mamma */}
+              <div>
+                <div className="bg-orange-100 w-12 h-12 rounded-full flex items-center justify-center mb-4 border-4 border-white shadow-md">
+                  <span className="text-2xl">💡</span>
+                </div>
+                <h3 className="font-extrabold text-2xl mb-3 text-gray-900 font-serif">
+                  Il Consiglio di Mamma
+                </h3>
+                <p className="text-gray-600 italic leading-relaxed border-l-4 border-orange-400 pl-4 py-2 bg-orange-50 rounded-r-lg">
+                  "
+                  {recipe.tips ||
+                    "Ricordati di assaggiare sempre mentre cucini! Il segreto di ogni piatto è l'amore... e un pizzico di sale al momento giusto."}
+                  "
+                </p>
               </div>
-              <h3 className="font-bold text-xl mb-3 text-gray-800 font-serif">
-                Il Consiglio di Mamma
-              </h3>
-              <p className="text-gray-600 italic mb-6 leading-relaxed">
-                "
-                {recipe.tips ||
-                  "Ricordati di assaggiare sempre mentre cucini! Il segreto di ogni piatto è l'amore... e un pizzico di sale al momento giusto."}
-                "
-              </p>
 
-              <div className="border-t border-gray-100 pt-6">
-                <h4 className="font-bold text-gray-800 mb-3 text-sm uppercase tracking-wider">
-                  Valori Nutrizionali
+              {/* Valori Nutrizionali */}
+              <div className="border-t border-gray-200 pt-6">
+                <h4 className="font-extrabold text-gray-800 mb-4 text-sm uppercase tracking-wider">
+                  Valori Nutrizionali (stima)
                 </h4>
-                <div className="space-y-3 text-sm">
-                  <div className="flex justify-between p-2 bg-gray-50 rounded">
-                    <span className="text-gray-500">Calorie</span>
-                    <span className="font-bold text-gray-800">450 kcal</span>
+                <div className="space-y-3 text-md">
+                  <div className="flex justify-between p-3 bg-gray-50 rounded font-medium">
+                    <span className="text-gray-600">Calorie</span>
+                    <span className="font-bold text-gray-900">450 kcal</span>
                   </div>
-                  <div className="flex justify-between p-2 bg-gray-50 rounded">
-                    <span className="text-gray-500">Carboidrati</span>
-                    <span className="font-bold text-gray-800">55g</span>
+                  <div className="flex justify-between p-3 bg-gray-50 rounded">
+                    <span className="text-gray-600">Carboidrati</span>
+                    <span className="font-bold text-gray-900">55g</span>
                   </div>
-                  <div className="flex justify-between p-2 bg-gray-50 rounded">
-                    <span className="text-gray-500">Proteine</span>
-                    <span className="font-bold text-gray-800">18g</span>
+                  <div className="flex justify-between p-3 bg-gray-50 rounded">
+                    <span className="text-gray-600">Proteine</span>
+                    <span className="font-bold text-gray-900">18g</span>
+                  </div>
+                  <div className="flex justify-between p-3 bg-gray-50 rounded">
+                    <span className="text-gray-600">Grassi</span>
+                    <span className="font-bold text-gray-900">20g</span>
                   </div>
                 </div>
               </div>

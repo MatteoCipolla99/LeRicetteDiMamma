@@ -4,23 +4,25 @@ import { Frown } from "lucide-react";
 
 const NotFound = () => {
   return (
-    <div className="min-h-[70vh] flex flex-col items-center justify-center text-center px-4">
-      <div className="bg-orange-100 p-6 rounded-full mb-6">
-        <Frown className="w-16 h-16 text-orange-500" />
+    <div className="min-h-[80vh] flex flex-col items-center justify-center text-center px-4 bg-gray-50 animate-fade-in">
+      <div className="w-48 h-48 bg-orange-200 rounded-full flex items-center justify-center mb-8 shadow-2xl">
+        <Frown className="w-24 h-24 text-orange-600 stroke-1" />
       </div>
-      <h1 className="text-6xl font-bold text-gray-800 mb-2">404</h1>
-      <h2 className="text-2xl font-bold text-gray-600 mb-4">
+      <h1 className="text-8xl font-extrabold text-orange-600 mb-2 font-mono drop-shadow-lg">
+        404
+      </h1>
+      <h2 className="text-4xl font-serif font-bold text-gray-800 mb-4">
         Ops! Piatto Bruciato
       </h2>
-      <p className="text-gray-500 max-w-md mb-8">
+      <p className="text-lg text-gray-600 max-w-lg mb-10 leading-relaxed">
         Sembra che la pagina che stai cercando non sia nel nostro menu. Potrebbe
         essere stata mangiata o spostata in un'altra dispensa.
       </p>
       <Link
         to="/"
-        className="px-8 py-3 bg-orange-500 text-white rounded-full font-bold hover:bg-orange-600 transition-all shadow-lg hover:shadow-orange-500/30"
+        className="px-10 py-4 bg-orange-600 text-white rounded-full font-bold text-lg hover:bg-orange-700 transition-all shadow-xl shadow-orange-600/30 transform hover:scale-[1.05]"
       >
-        Torna alla Home
+        Torna in Cucina (Home)
       </Link>
     </div>
   );

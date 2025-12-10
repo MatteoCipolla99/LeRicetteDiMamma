@@ -1,13 +1,12 @@
 import React, { useMemo } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useRecipes } from "../context/RecipeContext";
-import RecipeCard from "../components/RecipeCard";
+import RecipeCard from "../components/RecipeCard"; // Si assume sia ben stilizzato
 import { Heart, ChefHat, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
-import SEO from "../components/SEO";
+import SEO from "../components/SEO"; // Si assume sia ben implementato
 
 const FavoritesPage = () => {
-  // Nota: Questo componente si basa sul fatto che tu abbia creato useRecipes() nel RecipeContext
   const { user, favorites } = useAuth();
   const { allRecipes } = useRecipes();
 
@@ -18,20 +17,20 @@ const FavoritesPage = () => {
 
   if (!user) {
     return (
-      <div className="min-h-[60vh] flex flex-col items-center justify-center px-4 text-center">
+      <div className="min-h-[70vh] flex flex-col items-center justify-center px-4 text-center bg-gray-50">
         <SEO
           title="Area Riservata"
           description="Accedi per visualizzare e gestire il tuo ricettario personale."
         />
-        <ChefHat className="w-20 h-20 text-gray-300 mb-6" />
-        <h2 className="text-2xl font-bold text-gray-800 mb-2 font-serif">
+        <ChefHat className="w-20 h-20 text-orange-400 mb-6" />
+        <h2 className="text-3xl font-serif font-bold text-gray-800 mb-2">
           Area Riservata
         </h2>
-        <p className="text-gray-500 mb-8 max-w-md">
-          Accedi per visualizzare e gestire il tuo ricettario personale.
+        <p className="text-lg text-gray-500 mb-8 max-w-md">
+          Devi accedere per visualizzare e gestire il tuo ricettario personale.
         </p>
-        <div className="p-4 bg-primary-50 text-primary-700 rounded-lg shadow-md">
-          💡 Usa il pulsante "Accedi" in alto a destra.
+        <div className="p-4 bg-orange-100 text-orange-700 rounded-xl font-medium shadow-md">
+          💡 Clicca sul pulsante **Accedi** in alto a destra per continuare.
         </div>
       </div>
     );
@@ -45,14 +44,15 @@ const FavoritesPage = () => {
       />
 
       <div className="text-center mb-12">
-        <div className="inline-flex items-center justify-center p-3 bg-red-100 rounded-full mb-4 shadow-md">
-          <Heart className="w-8 h-8 text-red-500 fill-current" />
+        <div className="inline-flex items-center justify-center p-4 bg-red-100 rounded-full mb-4 shadow-lg border-2 border-red-200">
+          <Heart className="w-10 h-10 text-red-500 fill-current" />
         </div>
-        <h1 className="text-4xl font-serif font-bold text-gray-800 mb-4">
+        <h1 className="text-5xl font-serif font-extrabold text-gray-800 mb-4">
           Il Tuo Ricettario del Cuore
         </h1>
-        <p className="text-gray-500 max-w-2xl mx-auto">
-          Qui trovi tutte le ricette che hai salvato per le occasioni speciali.
+        <p className="text-lg text-gray-500 max-w-3xl mx-auto">
+          Qui trovi tutte le ricette che hai salvato per le occasioni speciali o
+          per quando hai voglia di un comfort food.
         </p>
       </div>
 
@@ -63,17 +63,18 @@ const FavoritesPage = () => {
           ))}
         </div>
       ) : (
-        <div className="text-center py-20 bg-white rounded-3xl border-2 border-dashed border-gray-200 shadow-inner">
-          <Heart className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-          <h3 className="text-xl font-bold text-gray-400 mb-4 font-serif">
-            Nessun preferito
+        <div className="text-center py-20 bg-white rounded-3xl border-2 border-dashed border-red-300 shadow-xl">
+          <Heart className="w-20 h-20 text-red-400 mx-auto mb-6 opacity-70" />
+          <h3 className="text-2xl font-serif font-bold text-gray-800 mb-4">
+            Nessuna Ricetta Preferita
           </h3>
-          <p className="text-gray-500 mb-8">
-            Inizia ad esplorare e riempi questa pagina di bontà.
+          <p className="text-lg text-gray-500 mb-8 max-w-md mx-auto">
+            Aggiungi le ricette che ti ispirano di più cliccando sull'icona del
+            cuore sulla pagina del piatto.
           </p>
           <Link
             to="/recipes"
-            className="btn-primary flex items-center gap-2 w-fit mx-auto"
+            className="inline-flex items-center px-8 py-3 bg-orange-600 text-white rounded-full font-bold hover:bg-orange-700 transition-all shadow-lg hover:shadow-orange-600/40 gap-2"
           >
             Esplora Ricette <ArrowRight size={20} />
           </Link>
